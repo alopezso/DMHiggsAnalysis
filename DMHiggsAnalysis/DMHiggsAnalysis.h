@@ -20,7 +20,7 @@ public:
   // node (done by the //!)
 private:
 
-  TFile* outFile;//!
+  TFile* m_outputFile;//!
   TTree *myEvents; //!
   // TH1 *myHist; //!
 
@@ -74,11 +74,15 @@ private:
   int photons_conversionType[MAXPARTICLES];
   float photons_conversionRadius[MAXPARTICLES];
   int photons_isTight[MAXPARTICLES];
-  //   int photons_isLoose[MAXPARTICLES];
-  int photons_isFixedCutTight[MAXPARTICLES];
-  int photons_isFixedCutTightCaloOnly[MAXPARTICLES];
-  int photons_isFixedCutLooseCaloOnly[MAXPARTICLES];
-  int photons_isFixedCutLoose[MAXPARTICLES];
+  int photons_isLoose[MAXPARTICLES];
+  int photons_isLoosePrime2[MAXPARTICLES];
+  int photons_isLoosePrime3[MAXPARTICLES];
+  int photons_isLoosePrime4[MAXPARTICLES];
+  int photons_isLoosePrime5[MAXPARTICLES];
+  int photons_isIsoFixedCutTight[MAXPARTICLES];
+  int photons_isIsoFixedCutTightCaloOnly[MAXPARTICLES];
+  int photons_isIsoFixedCutLooseCaloOnly[MAXPARTICLES];
+  int photons_isIsoFixedCutLoose[MAXPARTICLES];
   float photons_Cone20[MAXPARTICLES];
   float photons_Cone40[MAXPARTICLES];
   float photons_topoCone20[MAXPARTICLES];
@@ -98,6 +102,8 @@ private:
   float electrons_E3[MAXPARTICLES];
   float electrons_charge[MAXPARTICLES];
   int electrons_isTight[MAXPARTICLES];
+  int electrons_isMedium[MAXPARTICLES];
+  int electrons_isIsoLoose[MAXPARTICLES];
   //   int electrons_isLoose[MAXPARTICLES];
 
   float electrons_topoCone20[MAXPARTICLES];
@@ -117,6 +123,12 @@ private:
   float muons_E3[MAXPARTICLES];
   float muons_charge[MAXPARTICLES];
   int muons_passIPcut[MAXPARTICLES];
+  int muons_isTight[MAXPARTICLES];
+  int muons_isMedium[MAXPARTICLES];
+  int muons_isLoose[MAXPARTICLES];
+  int muons_isIsoGradientLoose[MAXPARTICLES];
+  int muons_isIsoGradient[MAXPARTICLES];
+  int muons_isIsoLoose[MAXPARTICLES];
 
 
   float muons_topoCone20[MAXPARTICLES];
@@ -194,7 +206,14 @@ private:
   float sumetTruthNonInt;
 
   std::map<std::string,TH1F*> m_histCutFlow; //!
+  /* std::map<std::string,TFile*> m_outputFiles; //! */
+  /* std::map<std::string,TTree*> m_outputTTree; //! */
 
+  std::string currentfilename; 
+
+  CP::MuonSelectionTool              *m_muonLooseSelectionTool; //!
+  CP::MuonSelectionTool              *m_muonMediumSelectionTool; //!
+  CP::MuonSelectionTool              *m_muonTightSelectionTool; //!
 
 public:
   // this is a standard constructor

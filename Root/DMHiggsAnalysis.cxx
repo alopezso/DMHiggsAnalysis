@@ -72,7 +72,7 @@ void DMHiggsAnalysis::declareVariables(){
   // myEvents->Branch("phi_j1_j2",&phi_j1_j2_var,"/F");  
   // myEvents->Branch("phi_allparticles_met",&phi_allparticles_met_var,"/F"); 
   myEvents->Branch("metSig",&metSig_var,"metSig_var/F"); 
-  myEvents->Branch("passVertex",&passVertex_var,"passVertex_var/I"); 
+  myEvents->Branch("passDiphotonToHardestVertexZCut",&passVertex_var,"passVertex_var/I"); 
   myEvents->Branch("passHiggsSelection",&passHiggsSelection_var,"passHiggsSelection_var/I"); 
   myEvents->Branch("passQualityCuts",&passQualityCuts_var,"passQualityCuts_var/I"); 
 
@@ -89,10 +89,16 @@ void DMHiggsAnalysis::declareVariables(){
   myEvents->Branch("photons_E3",photons_E3,"photons_E3[nPhotons]/F");
   myEvents->Branch("photons_conversion",photons_conversionType,"photons_conversionType[nPhotons]/I");
   myEvents->Branch("photons_conversionRadius",photons_conversionRadius,"photons_conversionRadius[nPhotons]/F");
-  myEvents->Branch("photon_isTight", photons_isTight,"photons_isTight[nPhotons]/F");
-  myEvents->Branch("photon_isFixedCutTight",  photons_isFixedCutTight, "photons_isFixedCutTight[nPhotons]/F");
-  myEvents->Branch("photons_isFixedCutCaloOnly",photons_isFixedCutLoose,"photons_isFixedCutCaloOnly[nPhotons]/F");
-  myEvents->Branch("photons_isFixedCutLoose",photons_isFixedCutLoose,"photons_isFixedCutLoose[nPhotons]/F");
+  myEvents->Branch("photon_isTight", photons_isTight,"photons_isTight[nPhotons]/I");
+  myEvents->Branch("photon_isLoose", photons_isLoose,"photons_isLoose[nPhotons]/I");
+  myEvents->Branch("photon_isLoosePrime2", photons_isLoosePrime2,"photons_isLoosePrime2[nPhotons]/I");
+  myEvents->Branch("photon_isLoosePrime3", photons_isLoosePrime3,"photons_isLoosePrime3[nPhotons]/I");
+  myEvents->Branch("photon_isLoosePrime4", photons_isLoosePrime4,"photons_isLoosePrime4[nPhotons]/I");
+  myEvents->Branch("photon_isLoosePrime5", photons_isLoosePrime5,"photons_isLoosePrime5[nPhotons]/I");
+  myEvents->Branch("photon_isIsoFixedCutTight",  photons_isIsoFixedCutTight, "photons_isIsoFixedCutTight[nPhotons]/I");
+  myEvents->Branch("photons_isIsoFixedCutTightCaloOnly",photons_isIsoFixedCutTightCaloOnly,"photons_isIsoFixedCutTightCaloOnly[nPhotons]/I");
+  myEvents->Branch("photons_isIsoFixedCutLooseCaloOnly",photons_isIsoFixedCutLooseCaloOnly,"photons_isIsoFixedCutLooseCaloOnly[nPhotons]/I");
+  myEvents->Branch("photons_isIsoFixedCutLoose",photons_isIsoFixedCutLoose,"photons_isIsoFixedCutLoose[nPhotons]/I");
   myEvents->Branch("photons_topoCone20",photons_topoCone20,"photons_topoCone20[nPhotons]/F");
   myEvents->Branch("photons_topoCone40",photons_topoCone40,"photons_topoCone40[nPhotons]/F");
   myEvents->Branch("photons_Cone20",photons_Cone20,"photons_Cone20[nPhotons]/F");
@@ -110,6 +116,8 @@ void DMHiggsAnalysis::declareVariables(){
   myEvents->Branch("electrons_E3",electrons_E3,"electrons_E3[nElectrons]/F");
   myEvents->Branch("electrons_charge",electrons_charge,"electrons_charge[nElectrons]/F");
   myEvents->Branch("electron_isTight", electrons_isTight,"electrons_isTight[nElectrons]/I");
+  myEvents->Branch("electron_isMedium", electrons_isMedium,"electrons_isMedium[nElectrons]/I");
+  myEvents->Branch("electron_isIsoLoose", electrons_isIsoLoose,"electrons_isIsoLoose[nElectrons]/I");
   myEvents->Branch("electrons_ptvarCone20",electrons_ptvarCone20,"electrons_ptvarCone20[nElectrons]/F");
   myEvents->Branch("electrons_topoCone20",electrons_topoCone20,"electrons_topoCone20[nElectrons]/F");
 
@@ -122,6 +130,12 @@ void DMHiggsAnalysis::declareVariables(){
   myEvents->Branch("muonE",  muonE, "muonE[nMuons]/F");
   myEvents->Branch("muons_charge",muons_charge,"muons_charge[nMuons]/F");
   myEvents->Branch("muon_passIPcut", muons_passIPcut,"muons_passIPcut[nMuons]/I");
+  myEvents->Branch("muon_isTight", muons_isTight,"muons_isTight[nMuons]/I");
+  myEvents->Branch("muon_isMedium", muons_isMedium,"muons_isMedium[nMuons]/I");
+  myEvents->Branch("muon_isLoose", muons_isLoose,"muons_isLoose[nMuons]/I");
+  myEvents->Branch("muon_isIsoGradientLoose", muons_isIsoGradientLoose,"muons_isIsoGradientLoose[nMuons]/I");
+  myEvents->Branch("muon_isIsoGradient", muons_isIsoGradient,"muons_isIsoGradient[nMuons]/I");
+  myEvents->Branch("muon_isIsoLoose", muons_isIsoLoose,"muons_isIsoLoose[nMuons]/I");
   myEvents->Branch("muons_ptvarCone20",muons_ptvarCone20,"muons_ptvarCone20[nMuons]/F");
   myEvents->Branch("muons_topoCone20",muons_topoCone20,"muons_topoCone20[nMuons]/F");
 
@@ -196,12 +210,16 @@ void DMHiggsAnalysis::clearVectors(){
 
     photons_conversionType[iparticle] =  - 9999;
     photons_isTight[iparticle] =  - 9999;
-    //    photons_isLoose[iparticle] =  - 9999;
-    //    photons_isLoosePrime[iparticle] =  - 9999;
+    photons_isLoose[iparticle] =  - 9999;
+    photons_isLoosePrime2[iparticle] =  - 9999;
+    photons_isLoosePrime3[iparticle] =  - 9999;
+    photons_isLoosePrime4[iparticle] =  - 9999;
+    photons_isLoosePrime5[iparticle] =  - 9999;
 
-    photons_isFixedCutTight[iparticle] =  - 9999;
-    photons_isFixedCutTightCaloOnly[iparticle] =  - 9999;
-    photons_isFixedCutLoose[iparticle] =  - 9999;
+    photons_isIsoFixedCutTight[iparticle] =  - 9999;
+    photons_isIsoFixedCutTightCaloOnly[iparticle] =  - 9999;
+    photons_isIsoFixedCutLooseCaloOnly[iparticle] =  - 9999;
+    photons_isIsoFixedCutLoose[iparticle] =  - 9999;
     photons_Cone20[iparticle] =  - 9999;
     photons_Cone40[iparticle] =  - 9999;
     photons_topoCone20[iparticle] =  - 9999;
@@ -218,6 +236,8 @@ void DMHiggsAnalysis::clearVectors(){
     electrons_E3[iparticle] =  - 9999;
 
     electrons_isTight[iparticle] =  - 9999;
+    electrons_isMedium[iparticle] =  - 9999;
+    electrons_isIsoLoose[iparticle] =  - 9999;
     electrons_topoCone20[iparticle] =  - 9999;
     electrons_ptvarCone20[iparticle] =  - 9999;
 
@@ -228,6 +248,12 @@ void DMHiggsAnalysis::clearVectors(){
     muonPz[iparticle] =  - 9999;
 
     muons_passIPcut[iparticle] =  - 9999;
+    muons_isLoose[iparticle] =  - 9999;
+    muons_isTight[iparticle] =  - 9999;
+    muons_isMedium[iparticle] =  - 9999;
+    muons_isIsoGradientLoose[iparticle] =  - 9999;
+    muons_isIsoGradient[iparticle] =  - 9999;
+    muons_isIsoLoose[iparticle] =  - 9999;
     muons_topoCone20[iparticle] =  - 9999;
     muons_ptvarCone20[iparticle] =  - 9999;
 
@@ -285,19 +311,49 @@ EL::StatusCode DMHiggsAnalysis::initialize()
 
 
   HgammaAnalysis::initialize();
-  outFile = TFile::Open("NTuple.root","RECREATE");
+
+  std::string inputfileName = wk()->inputFileName();
+  currentfilename = inputfileName;
+  inputfileName.replace(inputfileName.find(".MxAOD") , -1, "") ;
+  inputfileName.append(".NTuple.root");
 
 
 
+
+  m_outputFile = TFile::Open(inputfileName.c_str(),"RECREATE");
   myEvents = new TTree("DMHiggsAnalysis","DMHiggsAnalysis");
 
-  wk()->addOutput(outFile);
+  // m_outputFiles[currentfilename] = TFile::Open(inputfileName.c_str(),"RECREATE");
+
+  // inputfileName.replace(inputfileName.find(".NTuple.root") , -1, ".Tree");
+
+  // myEvents = new TTree(inputfileName.c_str(),"DMHiggsAnalysis");
+
+  // m_outputTTree[currentfilename] = myEvents;
+
+
+
+  //  wk()->addOutput( m_outputFiles[inputfileName] );
 
 
   //myEvents->SetDirectory(outFile);
 
   declareVariables();
 
+  m_muonTightSelectionTool = new CP::MuonSelectionTool("MuonTightSelectionTool");
+  m_muonMediumSelectionTool = new CP::MuonSelectionTool("MuonMediumSelectionTool");
+  m_muonLooseSelectionTool = new CP::MuonSelectionTool("MuonLooseSelectionTool");
+
+  CP_CHECK( "initialize()" , m_muonTightSelectionTool->setProperty("MuQuality", int(xAOD::Muon::Tight)) );
+  CP_CHECK( "initialize()" , m_muonMediumSelectionTool->setProperty("MuQuality", int(xAOD::Muon::Medium)) );
+  CP_CHECK( "initialize()" , m_muonLooseSelectionTool->setProperty("MuQuality", int(xAOD::Muon::Loose)) );
+
+  if( m_muonTightSelectionTool->initialize().isFailure() )
+    HG::fatal("Couldn't initalize MuonSelectionTool for tight WP. Exiting");
+  if( m_muonMediumSelectionTool->initialize().isFailure() )
+    HG::fatal("Couldn't initalize MuonSelectionTool for medium WP. Exiting");
+  if( m_muonLooseSelectionTool->initialize().isFailure() )
+    HG::fatal("Couldn't initalize MuonSelectionTool for loose WP. Exiting");
 
 
   return EL::StatusCode::SUCCESS;
@@ -356,6 +412,8 @@ EL::StatusCode DMHiggsAnalysis::execute()
   SG::AuxElement::Accessor<char> isisoFixedCutTightCaloOnly("isisoFixedCutTightCaloOnly");
   SG::AuxElement::Accessor<char> isisoFixedCutLooseCaloOnly("isisoFixedCutLooseCaloOnly");
   SG::AuxElement::Accessor<char> isTight("isTight");
+  SG::AuxElement::Accessor<char> isLoose("isLoose");
+  SG::AuxElement::Accessor<char> isMedium("isMedium");
   SG::AuxElement::Accessor<char> passIPcut("passIPCut");
 
   SG::AuxElement::Accessor<float> Jvt("Jvt");
@@ -403,6 +461,43 @@ EL::StatusCode DMHiggsAnalysis::execute()
 
 
   std::string inputfileName = wk()->inputFileName();
+
+  if( currentfilename != inputfileName ){
+
+    currentfilename = inputfileName;
+
+    inputfileName.replace(inputfileName.find(".MxAOD") , -1, "") ;
+    inputfileName.append(".NTuple.root");
+
+    m_outputFile->cd();
+
+    myEvents->Write();
+    //    if( m_histCutFlow[currentdirectory] ) m_histCutFlow[it.first]->Write();
+    m_outputFile->Close();
+
+    //myEvents->Delete();
+
+    m_outputFile = TFile::Open(inputfileName.c_str(),"RECREATE");
+    myEvents = new TTree("DMHiggsAnalysis","DMHiggsAnalysis");
+
+    //    m_outputFiles[currentfilename] = TFile::Open(inputfileName.c_str(),"RECREATE");
+
+    //    inputfileName.replace(inputfileName.find(".NTuple.root") , -1, ".Tree");
+
+    // myEvents = new TTree(inputfileName.c_str(),"DMHiggsAnalysis");
+
+    declareVariables();
+    //    m_outputTTree[currentfilename] = myEvents;
+
+    // wk()->addOutput(m_outputFiles[inputfileName]);
+
+
+    inputfileName = wk()->inputFileName();
+  
+
+  }
+
+
   std::string cutFlowName ;
 
   cutFlowName = "CutFlow_" + inputfileName;
@@ -530,11 +625,16 @@ EL::StatusCode DMHiggsAnalysis::execute()
     photons_topoCone40[nPhotons] = topoetCone40( *photons[gn] ); 
     photons_Cone20[nPhotons] = ptCone20( *photons[gn] ); 
     photons_Cone40[nPhotons] = ptCone40( *photons[gn] ); 
-    photons_isFixedCutTight[nPhotons] = isisoFixedCutTight( *photons[gn] ) == 1 ? 1 : 0; 
-    photons_isFixedCutTightCaloOnly[nPhotons] = isisoFixedCutTightCaloOnly( *photons[gn] ) == 1 ? 1 : 0; 
-    photons_isFixedCutLooseCaloOnly[nPhotons] = isisoFixedCutLooseCaloOnly( *photons[gn] ) == 1 ? 1 : 0; 
-    photons_isFixedCutLoose[nPhotons] = isisoFixedCutLoose( *photons[gn] ) == 1 ? 1 : 0;
-    photons_isTight[nPhotons] = isTight( *photons[gn] ) == 1 ? 1 : 0;    
+    photons_isIsoFixedCutTight[nPhotons] = isisoFixedCutTight( *photons[gn] ) == 1 ? 1 : 0; 
+    photons_isIsoFixedCutTightCaloOnly[nPhotons] = isisoFixedCutTightCaloOnly( *photons[gn] ) == 1 ? 1 : 0; 
+    photons_isIsoFixedCutLooseCaloOnly[nPhotons] = isisoFixedCutLooseCaloOnly( *photons[gn] ) == 1 ? 1 : 0; 
+    photons_isIsoFixedCutLoose[nPhotons] = isisoFixedCutLoose( *photons[gn] ) == 1 ? 1 : 0;
+    photons_isTight[nPhotons] = isTight( *photons[gn] ) == 1 ? 1 : 0;   
+    photons_isLoose[nPhotons] = photonHandler()->passPIDCut( photons[gn] , egammaPID::IsEMLoose  ) ? 1 : 0;  
+    photons_isLoosePrime2[nPhotons] = photonHandler()->passLoosePrime( photons[gn] , 2 ) == 1 ? 1 : 0;    
+    photons_isLoosePrime3[nPhotons] = photonHandler()->passLoosePrime( photons[gn] , 3 ) == 1 ? 1 : 0;    
+    photons_isLoosePrime4[nPhotons] = photonHandler()->passLoosePrime( photons[gn] , 4 ) == 1 ? 1 : 0;    
+    photons_isLoosePrime5[nPhotons] = photonHandler()->passLoosePrime( photons[gn] , 5 ) == 1 ? 1 : 0;   
 
     nPhotons++;
   }
@@ -553,9 +653,13 @@ EL::StatusCode DMHiggsAnalysis::execute()
     electrons_E2[nElectrons] = electrons[gn]->caloCluster() != nullptr ? electrons[gn]->caloCluster()->energyBE(2) : 0. ; 
     electrons_E3[nElectrons] = electrons[gn]->caloCluster() != nullptr ? electrons[gn]->caloCluster()->energyBE(3) : 0. ;
     
+
     electrons_topoCone20[nElectrons] = topoetCone20( *electrons[gn] ); 
     electrons_ptvarCone20[nElectrons] = ptvarCone20( *electrons[gn] );
     electrons_isTight[nElectrons] = isTight( *electrons[gn] ) == 1 ? 1 : 0; 
+    electrons_isMedium[nElectrons] = electronHandler()->passPIDCut( electrons[gn] , "Medium" )  ?  1 : 0; 
+    std::cout << " ================" << " Electron " << "======================== " << std::endl;
+    electrons_isIsoLoose[nElectrons] = electronHandler()->passIsoCut( electrons[gn] , HG::Iso::Loose )  ? 1 : 0; 
     electrons_charge[nElectrons] = electrons[gn]->charge() ;   
 
     nElectrons++;
@@ -567,6 +671,7 @@ EL::StatusCode DMHiggsAnalysis::execute()
 
   for(size_t gn=0; gn<muons.size(); gn++) {
 
+
     muonPx[nMuons] = muons[gn]->p4().Px();
     muonPy[nMuons] = muons[gn]->p4().Py();
     muonPz[nMuons] = muons[gn]->p4().Pz();
@@ -575,7 +680,16 @@ EL::StatusCode DMHiggsAnalysis::execute()
     muons_topoCone20[nMuons] = topoetCone20( *muons[gn] ); 
     muons_ptvarCone20[nMuons] = ptvarCone20( *muons[gn] );
     muons_charge[nMuons] = muons[gn]->charge() ;   
-    muons_passIPcut[nMuons] = passIPcut( *muons[gn] );   
+    muons_passIPcut[nMuons] = passIPcut( *muons[gn] ); 
+    std::cout << " ======================================== " << std::endl;
+    // muons_isLoose[nMuons] = m_muonLooseSelectionTool->accept( muons[gn] ) ? 1 : 0;  
+    // muons_isMedium[nMuons] = m_muonMediumSelectionTool->accept( muons[gn] ) ? 1 : 0;  
+    // muons_isTight[nMuons] = m_muonTightSelectionTool->accept( muons[gn] ) ? 1 : 0; 
+    muons_isIsoGradientLoose[nMuons] = muonHandler()->passIsoCut( muons[gn], HG::Iso::GradientLoose ) ? 1 : 0;  
+    muons_isIsoGradient[nMuons] = muonHandler()->passIsoCut( muons[gn], HG::Iso::Gradient ) ? 1 : 0;  
+    muons_isIsoLoose[nMuons] = muonHandler()->passIsoCut( muons[gn], HG::Iso::Loose ) ? 1 : 0;  
+
+
 
     nMuons++;
   }
@@ -710,20 +824,28 @@ EL::StatusCode DMHiggsAnalysis::execute()
 
 EL::StatusCode DMHiggsAnalysis::finalize() {
 
-
-  outFile->cd();
-  myEvents->Write();
-  for( auto it : m_histCutFlow ){
-    outFile->cd();
-    std::cout << " Writing the cutflow histogram of sample  : " + TString(it.first) << std::endl;
-    if( !it.second ) continue;
-      //HG::fatal("Cut flow histogram is empty.");
-    it.second->Write();
-  }
-  outFile->Close();
   
+  m_outputFile->cd();
+  myEvents->Write();
+  //  if( m_histCutFlow ) m_histCutFlow[it.first]->Write();
+  m_outputFile->Close();
+
+  
+  // for( auto it : m_outputFiles ){
+  //   it.second->cd();
+  //   m_outputTTree[it.first]->Write();
+  //   if( m_histCutFlow[it.first] ) m_histCutFlow[it.first]->Write();
+  //   it.second->Close();
+
+  // }
 
 
+  if( m_muonTightSelectionTool )
+    delete m_muonTightSelectionTool;
+  if( m_muonMediumSelectionTool )
+    delete m_muonMediumSelectionTool;
+  if( m_muonLooseSelectionTool )
+    delete m_muonLooseSelectionTool;
 
   HgammaAnalysis::finalize();
 
